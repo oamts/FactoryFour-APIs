@@ -6,8 +6,8 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import { css } from "@emotion/react";
 import { useEffect } from "react";
-import { fetchAccounts } from "./reducers/appSlice.ts";
 import { useAppDispatch } from "./reducers/hooks.ts";
+import { fetchAccounts, fetchAssets } from "./reducers/api/actions.ts";
 
 const Header = () => {
   return (
@@ -82,15 +82,18 @@ const Content = () => {
 
 function App() {
   const dispatch = useAppDispatch();
+  dispatch(fetchAccounts());
+  dispatch(fetchAssets());
 
   useEffect(() => {
     const interval = setInterval(() => {
       dispatch(fetchAccounts());
+      dispatch(fetchAssets());
       console.log("run");
     }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [dispatch]);
 
   return (
     <>

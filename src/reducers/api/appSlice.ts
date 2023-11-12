@@ -1,5 +1,6 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { client } from "../client.ts";
+import { createSlice } from "@reduxjs/toolkit";
+import { routes, typeRoutes } from "../../const.ts";
+import { fetchAccounts, fetchAssets } from "./actions.ts";
 
 interface Info {
   data: {
@@ -10,11 +11,6 @@ interface Info {
   };
   status: "loading" | "succeeded" | "failed";
 }
-
-export const fetchAccounts = createAsyncThunk("fetchAccounts", async () => {
-  const response = await client.get("accounts");
-  return response.data;
-});
 
 const initialData = {
   success: false,
@@ -28,11 +24,16 @@ const initialInfo: Info = {
   status: "loading",
 };
 
-const initialState: AppState = { accounts: initialInfo };
+type AppState = {
+  [key in typeRoutes]: Info;
+};
 
-interface AppState {
-  accounts: Info;
-}
+const initialState: AppState = {
+  ...routes.reduce<AppState>((acc, elem) => {
+    acc[elem] = initialInfo;
+    return acc;
+  }, {} as AppState),
+};
 
 const AppSlice = createSlice({
   name: "app",
@@ -46,11 +47,23 @@ const AppSlice = createSlice({
       })
       .addCase(fetchAccounts.fulfilled, (state, { payload }) => {
         state.accounts.status = "succeeded";
-        state.accounts.data = payload;
+        state.accounts.data = payload.data;
       })
       .addCase(fetchAccounts.rejected, (state) => {
         state.accounts.status = "failed";
         state.accounts.data = initialData;
+      })
+      .addCase(fetchAssets.pending, (state) => {
+        state.assets.status = "loading";
+        state.assets.data = initialData;
+      })
+      .addCase(fetchAssets.fulfilled, (state, { payload }) => {
+        state.assets.status = "succeeded";
+        state.assets.data = payload.data;
+      })
+      .addCase(fetchAssets.rejected, (state) => {
+        state.assets.status = "failed";
+        state.assets.data = initialData;
       });
   },
 });

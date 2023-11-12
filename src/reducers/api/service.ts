@@ -21,7 +21,7 @@ export async function client(apiName: string) {
       return {
         status: response.status,
         data,
-        headers: response.headers,
+        headers: JSON.stringify(response.headers),
         url: response.url,
       };
     }
