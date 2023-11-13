@@ -10,7 +10,6 @@ export async function client(apiName: string) {
   const config = {
     method: "GET",
     headers: headers,
-    mode: "cors",
   };
 
   let data;
@@ -31,7 +30,6 @@ export async function client(apiName: string) {
     }
     throw new Error(response.statusText);
   } catch (err) {
-    console.log(err);
     return Promise.reject(err.message ? err.message : data);
   }
 }
