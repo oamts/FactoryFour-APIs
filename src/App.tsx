@@ -27,8 +27,9 @@ const Content = () => {
                 container
                 justifyContent="center"
                 alignItems="flex-start"
+                key={apiName}
               >
-                <ApiCard apiName={apiName} info={info} key={apiName} />
+                <ApiCard apiName={apiName} info={info} />
               </Grid>
             );
           })}

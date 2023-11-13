@@ -48,9 +48,13 @@ export const ApiCard: FC<Props> = ({ apiName, info }) => {
       {loading && <CircularProgress />}
       {!loading && (
         <>
-          <Typography>{apiName.toUpperCase()}</Typography>
-          <Typography>{info.data.hostname}</Typography>
-          <Typography>
+          <Typography sx={{ fontFamily: "Ubuntu", fontWeight: "bold" }}>
+            {apiName.toUpperCase()}
+          </Typography>
+          <Typography sx={{ fontFamily: "Ubuntu" }}>
+            {info.data.hostname}
+          </Typography>
+          <Typography sx={{ fontFamily: "Ubuntu" }}>
             {succeeded && new Date(Number(info.data.time)).toLocaleString()}
             {!succeeded && "OFFLINE"}
           </Typography>
