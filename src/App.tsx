@@ -1,80 +1,38 @@
 import "./App.css";
 import Container from "@mui/material/Container";
 import { CssBaseline } from "@mui/material";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import { css } from "@emotion/react";
 import { useEffect } from "react";
-import { useAppDispatch } from "./reducers/hooks.ts";
-import { fetchAccounts, fetchAssets } from "./reducers/api/actions.ts";
-
-const Header = () => {
-  return (
-    <Paper
-      elevation={3}
-      component="header"
-      sx={{
-        backgroundColor: "lightblue",
-        minHeight: "50px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Container>
-        <Typography
-          variant="h5"
-          component="h1"
-          sx={{ fontFamily: "Ubuntu" }}
-          color="gray"
-        >
-          Status Dashboard
-        </Typography>
-      </Container>
-    </Paper>
-  );
-};
-
-const Card = () => {
-  return (
-    <Box
-      sx={css`
-        width: 250px;
-        border: 2px solid black;
-        border-radius: 10px;
-        padding-left: 20px;
-        box-shadow: 5px 5px 1px black;
-        position: relative;
-
-        &:before {
-          background: none;
-          border-left: 8px solid green;
-          content: "";
-          display: block;
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          pointer-events: none;
-          z-index: -1;
-          border-radius: 5px;
-        }
-      `}
-    >
-      <Typography>ACCOUNTS</Typography>
-      <Typography>accounts-3b9592810b01</Typography>
-      <Typography>17:41:11</Typography>
-    </Box>
-  );
-};
+import { useAppDispatch, useAppSelector } from "./reducers/hooks.ts";
+import { mapDispatchToProps } from "./reducers/api/actions.ts";
+import { Header } from "./components/Header.tsx";
+import { ApiCard } from "./components/ApiCard.tsx";
+import { selectApiState } from "./reducers/api/selectors.ts";
+import Grid from "@mui/material/Grid";
+import { apiRefreshInterval } from "./const.ts";
 
 const Content = () => {
+  const apiData = useAppSelector(selectApiState);
   return (
-    <Box>
+    <Box sx={{ minHeight: "100vh", paddingTop: "40px", background: "#FAF6F0" }}>
       <Container>
-        <Card />
+        <Grid container rowSpacing={4}>
+          {Object.entries(apiData).map(([apiName, info]) => {
+            return (
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={4}
+                container
+                justifyContent="center"
+                alignItems="flex-start"
+              >
+                <ApiCard apiName={apiName} info={info} key={apiName} />
+              </Grid>
+            );
+          })}
+        </Grid>
       </Container>
     </Box>
   );
@@ -82,15 +40,12 @@ const Content = () => {
 
 function App() {
   const dispatch = useAppDispatch();
-  dispatch(fetchAccounts());
-  dispatch(fetchAssets());
+  mapDispatchToProps(dispatch);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      dispatch(fetchAccounts());
-      dispatch(fetchAssets());
-      console.log("run");
-    }, 5000);
+      mapDispatchToProps(dispatch);
+    }, apiRefreshInterval * 1000);
 
     return () => clearInterval(interval);
   }, [dispatch]);

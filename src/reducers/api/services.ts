@@ -2,11 +2,15 @@
 // https://kentcdodds.com/blog/replace-axios-with-a-simple-custom-fetch-wrapper
 
 export async function client(apiName: string) {
-  const headers = { "Content-Type": "application/json" };
+  const headers = {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+  };
 
   const config = {
     method: "GET",
     headers: headers,
+    mode: "cors",
   };
 
   let data;
@@ -27,6 +31,7 @@ export async function client(apiName: string) {
     }
     throw new Error(response.statusText);
   } catch (err) {
+    console.log(err);
     return Promise.reject(err.message ? err.message : data);
   }
 }

@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import appReducer from "./api/appSlice.ts";
+import apiReducer from "./api/reducers.ts";
 
 export const store = configureStore({
   reducer: {
-    app: appReducer,
+    api: apiReducer,
   },
 });
 
