@@ -21,4 +21,4 @@ export const routes = [
 export type typeRoutes = (typeof routes)[number];
 
 //seconds
-export const apiRefreshInterval = 5;
+export const apiRefreshInterval = 15;
